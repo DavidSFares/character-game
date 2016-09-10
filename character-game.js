@@ -115,7 +115,7 @@ if (jumping) {
 }
 
 if (jumping) {
-	context.drawImage(images["legs-jump"], x - 6, y);
+	context.drawImage(images["legs-jump"], x, y - 6);
 } else {
 	context.drawImage(images["legs"], x, y);
 }
@@ -125,7 +125,7 @@ context.drawImage(images["head"], x - 10, y - 125 - breathAmt);
 context.drawImage(images["hair"], x - 37, y - 138 - breathAmt);
 
 if (jumping) {
-	context.drawImage(images["rightArm"], x - 35, y - 42 - breathAmt);
+	context.drawImage(images["rightArm-jump"], x - 35, y - 42 - breathAmt);
 } else {
 	context.drawImage(images["rightArm"], x - 15, y - 42 - breathAmt);
 }
