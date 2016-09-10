@@ -3,6 +3,8 @@ script.src = 'https://rawgit.com/DavidSFares/character-game/master/character-gam
 script.type = 'text/javascript';
 document.getElementsByTagName('head')[0].appendChild(script);
 
+$ = jQuery;
+
 // Shorthand for $( document ).ready()
 $(function() {
     console.log( script.src );
