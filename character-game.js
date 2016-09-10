@@ -71,7 +71,7 @@ function loadImage(name) {
   images[name].onload = function() { 
 	  resourceLoaded();
   }
-  images[name].src = "images/" + name + ".png";
+  images[name].src = "http://rawgit.com/DavidSFares/character-game/master/images/" + name + ".png";
 }
 
 function resourceLoaded() {
