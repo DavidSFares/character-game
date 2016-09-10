@@ -37,6 +37,7 @@ var numFramesDrawn = 0;
 var curFPS = 0;
 
 var jumping = false;
+var shift_horiz = (-130);
 
 function updateFPS() {
 
@@ -99,9 +100,9 @@ canvas.width = canvas.width; // clears the canvas
 
 // Draw shadow
 if (jumping) {
-	drawEllipse(x + 40, y + 29, 100 - breathAmt, 4);
+	drawEllipse(x - 90, y + 29, 100 - breathAmt, 4);
 } else {
-	drawEllipse(x + 40, y + 29, 160 - breathAmt, 6); // Shadow
+	drawEllipse(x - 90, y + 29, 160 - breathAmt, 6); // Shadow
 }
 
 if (jumping) {
@@ -109,29 +110,29 @@ if (jumping) {
 }
 
 if (jumping) {
-	context.drawImage(images["leftArm-jump"], x + 40, y - 42 - breathAmt);
+	context.drawImage(images["leftArm-jump"], x - 90, y - 42 - breathAmt);
 } else {
-	context.drawImage(images["leftArm"], x + 40, y - 42 - breathAmt);
+	context.drawImage(images["leftArm"], x - 90, y - 42 - breathAmt);
 }
 
 if (jumping) {
-	context.drawImage(images["legs-jump"], x, y - 6);
+	context.drawImage(images["legs-jump"], x - 130, y - 6);
 } else {
-	context.drawImage(images["legs"], x, y);
+	context.drawImage(images["legs"], x - 130, y);
 }
 
-context.drawImage(images["torso"], x, y - 50);
-context.drawImage(images["head"], x - 10, y - 125 - breathAmt);
-context.drawImage(images["hair"], x - 37, y - 138 - breathAmt);
+context.drawImage(images["torso"], x -130, y - 50);
+context.drawImage(images["head"], x - 140, y - 125 - breathAmt);
+context.drawImage(images["hair"], x - 167, y - 138 - breathAmt);
 
 if (jumping) {
-	context.drawImage(images["rightArm-jump"], x - 35, y - 42 - breathAmt);
+	context.drawImage(images["rightArm-jump"], x - 165, y - 42 - breathAmt);
 } else {
-	context.drawImage(images["rightArm"], x - 15, y - 42 - breathAmt);
+	context.drawImage(images["rightArm"], x - 145, y - 42 - breathAmt);
 }
 
-drawEllipse(x + 47, y - 68 - breathAmt, 8, curEyeHeight); // Left Eye
-drawEllipse(x + 58, y - 68 - breathAmt, 8, curEyeHeight); // Right Eye
+drawEllipse(x - 83, y - 68 - breathAmt, 8, curEyeHeight); // Left Eye
+drawEllipse(x - 72, y - 68 - breathAmt, 8, curEyeHeight); // Right Eye
 
 context.font = "bold 12px sans-serif";
 
