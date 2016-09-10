@@ -134,8 +134,13 @@ drawEllipse(x + 47, y - 68 - breathAmt, 8, curEyeHeight); // Left Eye
 drawEllipse(x + 58, y - 68 - breathAmt, 8, curEyeHeight); // Right Eye
 
 context.font = "bold 12px sans-serif";
-context.fillText("fps: " + curFPS + "/" + fps + " (" + numFramesDrawn + ")", 40, 200);
+
+// context.fillText("fps: " + curFPS + "/" + fps + " (" + numFramesDrawn + ")", 40, 200);
 ++numFramesDrawn;
+
+context.fillText("<div class='jumpButton'>Jump</div>", 40, 200);
+
+context.fillText("<div class='blinkButton'>Jump</div>", 60, 200);
 }
 
 function drawEllipse(centerX, centerY, width, height) {
