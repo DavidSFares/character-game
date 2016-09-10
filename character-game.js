@@ -16,7 +16,7 @@
 var canvas;
 var context;
 var images = {};
-var totalResources = 6;
+var totalResources = 9;
 var numResourcesLoaded = 0;
 var fps = 30;
 var x = 245;
@@ -36,126 +36,171 @@ var fpsInterval = setInterval(updateFPS, 1000);
 var numFramesDrawn = 0;
 var curFPS = 0;
 
+var jumping = false;
+
 function updateFPS() {
-	
+
 	curFPS = numFramesDrawn;
 	numFramesDrawn = 0;
 }		
 function prepareCanvas(canvasDiv, canvasWidth, canvasHeight)
 {
-	// Create the canvas (Neccessary for IE because it doesn't know what a canvas element is)
-	canvas = document.createElement('canvas');
-	canvas.setAttribute('width', canvasWidth);
-	canvas.setAttribute('height', canvasHeight);
-	canvas.setAttribute('id', 'canvas');
-	canvasDiv.appendChild(canvas);
-	
-	if(typeof G_vmlCanvasManager != 'undefined') {
-		canvas = G_vmlCanvasManager.initElement(canvas);
-	}
-	context = canvas.getContext("2d"); // Grab the 2d canvas context
-	// Note: The above code is a workaround for IE 8and lower. Otherwise we could have used:
-	//     context = document.getElementById('canvas').getContext("2d");
-	
-	loadImage("leftArm");
-	loadImage("legs");
-	loadImage("torso");
-	loadImage("rightArm");
-	loadImage("head");
-	loadImage("hair");
+// Create the canvas (Neccessary for IE because it doesn't know what a canvas element is)
+canvas = document.createElement('canvas');
+canvas.setAttribute('width', canvasWidth);
+canvas.setAttribute('height', canvasHeight);
+canvas.setAttribute('id', 'canvas');
+canvasDiv.appendChild(canvas);
+
+if(typeof G_vmlCanvasManager != 'undefined') {
+	canvas = G_vmlCanvasManager.initElement(canvas);
+}
+context = canvas.getContext("2d"); // Grab the 2d canvas context
+// Note: The above code is a workaround for IE 8and lower. Otherwise we could have used:
+//     context = document.getElementById('canvas').getContext("2d");
+
+loadImage("leftArm");
+loadImage("legs");
+loadImage("torso");
+loadImage("rightArm");
+loadImage("head");
+loadImage("hair");
+
+loadImage("leftArm-jump");
+loadImage("legs-jump");
+loadImage("rightArm-jump");
 }
 
 function loadImage(name) {
 
-  images[name] = new Image();
-  images[name].onload = function() { 
-	  resourceLoaded();
-  }
-  images[name].src = "http://rawgit.com/DavidSFares/character-game/master/images/" + name + ".png";
+	images[name] = new Image();
+	images[name].onload = function() { 
+		resourceLoaded();
+	}
+	images[name].src = "http://rawgit.com/DavidSFares/character-game/master/images/" + name + ".png";
 }
 
 function resourceLoaded() {
 
-  numResourcesLoaded += 1;
-  if(numResourcesLoaded === totalResources) {
-  
-	setInterval(redraw, 1000 / fps);
-  }
+	numResourcesLoaded += 1;
+	if(numResourcesLoaded === totalResources) {
+
+		setInterval(redraw, 1000 / fps);
+	}
 }
 
 function redraw() {
-				
-  canvas.width = canvas.width; // clears the canvas 
 
-  drawEllipse(x + 40, y + 29, 160 - breathAmt, 6); // Shadow
+	var x = charX;
+	var y = charY;
+	var jumpHeight = 45;
 
-  context.drawImage(images["leftArm"], x + 40, y - 42 - breathAmt);
-  context.drawImage(images["legs"], x, y);
-  context.drawImage(images["torso"], x, y - 50);
-  context.drawImage(images["head"], x - 10, y - 125 - breathAmt);
-  context.drawImage(images["hair"], x - 37, y - 138 - breathAmt);
-  context.drawImage(images["rightArm"], x - 15, y - 42 - breathAmt);
-	
-  drawEllipse(x + 47, y - 68 - breathAmt, 8, curEyeHeight); // Left Eye
-  drawEllipse(x + 58, y - 68 - breathAmt, 8, curEyeHeight); // Right Eye
-  
-  context.font = "bold 12px sans-serif";
-  context.fillText("fps: " + curFPS + "/" + fps + " (" + numFramesDrawn + ")", 40, 200);
-  ++numFramesDrawn;
+canvas.width = canvas.width; // clears the canvas 
+
+// Draw shadow
+if (jumping) {
+	drawEllipse(x + 40, y + 29, 100 - breathAmt, 4);
+} else {
+	drawEllipse(x + 40, y + 29, 160 - breathAmt, 6); // Shadow
+}
+
+if (jumping) {
+	y -= jumpHeight;
+}
+
+if (jumping) {
+	context.drawImage(images["leftArm-jump"], x + 40, y - 42 - breathAmt);
+} else {
+	context.drawImage(images["leftArm"], x + 40, y - 42 - breathAmt);
+}
+
+if (jumping) {
+	context.drawImage(images["legs-jump"], x - 6, y);
+} else {
+	context.drawImage(images["legs"], x, y);
+}
+
+context.drawImage(images["torso"], x, y - 50);
+context.drawImage(images["head"], x - 10, y - 125 - breathAmt);
+context.drawImage(images["hair"], x - 37, y - 138 - breathAmt);
+
+if (jumping) {
+	context.drawImage(images["rightArm"], x - 35, y - 42 - breathAmt);
+} else {
+	context.drawImage(images["rightArm"], x - 15, y - 42 - breathAmt);
+}
+
+drawEllipse(x + 47, y - 68 - breathAmt, 8, curEyeHeight); // Left Eye
+drawEllipse(x + 58, y - 68 - breathAmt, 8, curEyeHeight); // Right Eye
+
+context.font = "bold 12px sans-serif";
+context.fillText("fps: " + curFPS + "/" + fps + " (" + numFramesDrawn + ")", 40, 200);
+++numFramesDrawn;
 }
 
 function drawEllipse(centerX, centerY, width, height) {
 
-  context.beginPath();
-  
-  context.moveTo(centerX, centerY - height/2);
-  
-  context.bezierCurveTo(
-	centerX + width/2, centerY - height/2,
-	centerX + width/2, centerY + height/2,
-	centerX, centerY + height/2);
+	context.beginPath();
 
-  context.bezierCurveTo(
-	centerX - width/2, centerY + height/2,
-	centerX - width/2, centerY - height/2,
-	centerX, centerY - height/2);
- 
-  context.fillStyle = "black";
-  context.fill();
-  context.closePath();	
+	context.moveTo(centerX, centerY - height/2);
+
+	context.bezierCurveTo(
+		centerX + width/2, centerY - height/2,
+		centerX + width/2, centerY + height/2,
+		centerX, centerY + height/2);
+
+	context.bezierCurveTo(
+		centerX - width/2, centerY + height/2,
+		centerX - width/2, centerY - height/2,
+		centerX, centerY - height/2);
+
+	context.fillStyle = "black";
+	context.fill();
+	context.closePath();	
 }
 
 function updateBreath() { 
-				
-  if (breathDir === 1) {  // breath in
+
+if (breathDir === 1) {  // breath in
 	breathAmt -= breathInc;
 	if (breathAmt < -breathMax) {
-	  breathDir = -1;
+		breathDir = -1;
 	}
-  } else {  // breath out
+} else {  // breath out
 	breathAmt += breathInc;
 	if(breathAmt > breathMax) {
-	  breathDir = 1;
+		breathDir = 1;
 	}
-  }
+}
 }
 
 function updateBlink() { 
-				
-  eyeOpenTime += blinkUpdateTime;
-	
-  if(eyeOpenTime >= timeBtwBlinks){
-	blink();
-  }
+
+	eyeOpenTime += blinkUpdateTime;
+
+	if(eyeOpenTime >= timeBtwBlinks){
+		blink();
+	}
 }
 
 function blink() {
 
-  curEyeHeight -= 1;
-  if (curEyeHeight <= 0) {
-	eyeOpenTime = 0;
-	curEyeHeight = maxEyeHeight;
-  } else {
-	setTimeout(blink, 10);
-  }
+	curEyeHeight -= 1;
+	if (curEyeHeight <= 0) {
+		eyeOpenTime = 0;
+		curEyeHeight = maxEyeHeight;
+	} else {
+		setTimeout(blink, 10);
+	}
+}
+
+function jump() {
+	if (!jumping) {
+		jumping = true;
+		setTimeout(land, 500);
+	}
+}
+
+function land() {
+	jumping = false;
 }
